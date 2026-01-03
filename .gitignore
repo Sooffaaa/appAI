@@ -1,0 +1,80 @@
+# ======================
+# Python
+# ======================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.Python
+
+# Virtual environment
+venv/
+.env/
+.env.*
+.venv/
+
+# ======================
+# Environment variables
+# ======================
+.env
+.env.local
+.env.dev
+.env.prod
+
+# ======================
+# FastAPI / Uvicorn
+# ======================
+*.log
+logs/
+
+# ======================
+# Database
+# ======================
+*.sqlite3
+*.db
+
+# ======================
+# Alembic
+# ======================
+alembic/versions/*.pyc
+
+# ======================
+# OS / Editor
+# ======================
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+
+# PyCharm
+.idea/
+
+# ======================
+# Frontend
+# ======================
+node_modules/
+dist/
+build/
+.cache/
+
+# ======================
+# Testing
+# ======================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ======================
+# Secrets / Keys
+# ======================
+*.pem
+*.key
+*.crt
+
+# ======================
+# Docker
+# ======================
+*.pid
