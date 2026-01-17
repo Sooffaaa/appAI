@@ -5,6 +5,9 @@ from app.db.session import get_db
 from app.models.chat import Chat
 from app.models.message import Message
 from app.schemas.chat import ChatOut
+from app.schemas.message import MessageOut
+from app.services.chat import get_chat_history
+from app.services.ai import ask_ai
 from app.core.security import get_current_user
 
 router = APIRouter(prefix="/chats", tags=["chats"])
@@ -44,5 +47,5 @@ async def get_chat(
 
 		if not chat:
 				raise HTTPException(status_code=404, detail="Chat not found")
-				
+		
 		return chat
