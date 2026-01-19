@@ -6,7 +6,7 @@ async def get_chat_history(chat_id: int, db: AsyncSession) -> list[dict]:
 		result = await db.execute(
 				select(Message)
 				.where(Message.chat_id == chat_id)
-				.order_by(Message.timestamp)
+				.order_by(Message.created_at)
 		)
 
 		messages = result.scalars().all()

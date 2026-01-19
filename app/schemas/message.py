@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+class MessageCreate(BaseModel):
+    role: str
+    content: str
 class MessageOut(BaseModel):
 		id: int
 		role: str
