@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from app.db.session import get_db
 from app.models.chat import Chat
 from app.models.message import Message
@@ -30,7 +31,12 @@ async def get_chats(
 		db:AsyncSession = Depends(get_db),
 		current_user = Depends(get_current_user)
 ):
-		result = await db.execute(select(Chat).where(Chat.user_id == current_user.id))
+		result = await db.execute(
+			select(Chat)
+			.where(Chat.user_id == current_user.id)
+			.options(selectinload(Chat.messages))
+		)
+
 		return result.scalars().all()
 
 
@@ -41,7 +47,9 @@ async def get_chat(
 		current_user = Depends(get_current_user)
 ):
 		result = await db.execute(
-				select(Chat).where(Chat.id == chat_id, Chat.user_id == current_user.id)
+			select(Chat)
+			.where(Chat.id == chat_id, Chat.user_id == current_user.id)
+			.options(selectinload(Chat.messages))
 		)
 		chat = result.scalar_one_or_none()
 
