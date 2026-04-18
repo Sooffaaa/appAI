@@ -12,31 +12,42 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register")
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
-		result = await db.execute(select(User).where(User.email == user_data.email))
-		if result.scalar_one_or_none():
-				raise HTTPException(status_code=400, detail="Email already registered")
+	"""
+	Register a new user.
+	- **username**: Unique username
+	- **email**: Unique email address
+	- **password**: Password for the user
+	"""
+	result = await db.execute(select(User).where(User.email == user_data.email))
+	if result.scalar_one_or_none():
+		raise HTTPException(status_code=400, detail="Email already registered")
 
-		user = User(
-				username=user_data.username,
-				email=user_data.email,
-				hashed_password=hash_password(user_data.password),
-		)
+	user = User(
+		username=user_data.username,
+		email=user_data.email,
+		hashed_password=hash_password(user_data.password),
+	)
 
-		db.add(user)
-		await db.commit()
-		await db.refresh(user)
+	db.add(user)
+	await db.commit()
+	await db.refresh(user)
 
-		return {"message": "User created"}
+	return {"message": "User created"}
 
 
 @router.post("/login")
 async def login(user_data: UserLogin, db: AsyncSession = Depends(get_db)):
-		result = await db.execute(select(User).where(User.email == user_data.email))
-		user = result.scalar_one_or_none()
+	"""
+	Login and get access token.
+	- **email**: User email
+	- **password**: User password
+	"""
+	result = await db.execute(select(User).where(User.email == user_data.email))
+	user = result.scalar_one_or_none()
 
-		if not user or not verify_password(user_data.password, user.hashed_password):
-				raise HTTPException(status_code=401, detail="Invalid credentials")
-		
-		token = create_access_token({"sub": str(user.id)})
+	if not user or not verify_password(user_data.password, user.hashed_password):
+		raise HTTPException(status_code=401, detail="Invalid credentials")
+	
+	token = create_access_token({"sub": str(user.id)})
 
-		return {"access_token": token, "token_type": "bearer"}
+	return {"access_token": token, "token_type": "bearer"}

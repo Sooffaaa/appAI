@@ -1,9 +1,10 @@
 from google import genai
-from app.core.config import settings
+from app.core.config import settings, logger
 
-genai.configure(api_key=settings.AI_API_KEY)
+client = genai.Client(api_key=settings.AI_API_KEY)
 
-model = genai.GenerativeModel("gemini-2.0-flash")
+model = client.models.generate_content
+
 
 async def ask_ai(messages: list[dict]) -> str:
 		"""
@@ -24,6 +25,13 @@ async def ask_ai(messages: list[dict]) -> str:
 				elif role == "assistant":
 						prompt += f"Assistant: {content}\n"
 
-		responce = model.generate_content(prompt)
-
-		return responce.text
+		try:
+			response = client.models.generate_content(
+				model="gemini-2.0-flash-exp",
+				contents=prompt
+			)
+			logger.info("AI response generated successfully")
+			return response.text
+		except Exception as e:
+			logger.error(f"AI error: {e}")
+			return "Sorry, I couldn't generate a response right now. Please try again later."
